@@ -51,6 +51,7 @@ export default class TitleScreen extends Phaser.Scene {
                 //a function to adjust the sprite to set it's achor to the top left 0,0
                 this.adjustBoba(boba);
             }
+
         }
 
 
@@ -68,9 +69,8 @@ export default class TitleScreen extends Phaser.Scene {
 
         //need to adjust player's origin as well
         this.adjustBoba(this.player);
-
         //move entire boba group up 
-        //this.bobasGroup.setVelocityY(-gameOption.bobaSpeed); //need negative cause going up
+        this.bobasGroup.setVelocityY(-gameOption.bobaSpeed); //need negative cause going up
         //player movement
         this.canMove = true;
 
@@ -79,7 +79,7 @@ export default class TitleScreen extends Phaser.Scene {
 
         //player Movement
         this.input.on("pointerdown", this.moveBoba, this);
-        this.input.on("pointerdown", this.moveBobasGroup, this);
+        //this.input.on("pointerdown", this.moveBobasGroup, this);
     }
 
     adjustBoba(sprite) {
@@ -97,12 +97,76 @@ export default class TitleScreen extends Phaser.Scene {
     moveBoba(pointer) {
         if (this.canMove) {
             //get where I am clicking
-
             //getting the column based on the boba size
             //e.g if 300 / 30 = 10 <-- column 10
             let column = Math.floor(pointer.x / this.bobaSize);
-            this.player.setX(column * this.bobaSize);
-            //determine the distance between the mouse click and 
+            //this.player.setX(column * this.bobaSize);
+            //determine the distance between the mouse click and player distance
+            //clicked colum * boba size will get the column x value, then minus player x, then we divide by boba size to get column to get x 
+            let distance = Math.floor(Math.abs(column * this.bobaSize - this.player.x) / this.bobaSize);
+
+            if (distance > 0) {
+                this.canMove = false;
+                this.tweens.add({
+                    targets: [this.player],
+                    x: column * this.bobaSize,
+                    duration: distance * 30,
+                    callbackScope: this,
+                    onComplete: function () {
+                        // at the end of the tween, check for tile match
+                        this.checkMatch();
+                    }
+                });
+
+            }
+        }
+    }
+
+    checkMatch() {
+        // mid point of x, and mid point of y of below curr play, thats why mutiple 1.5
+        // overlapRect will return an array of bodies that were overlap in the given area
+        let bobaBelow = this.physics.overlapRect(this.player.x + this.bobaSize / 2, this.player.y + this.bobaSize * 1.5, 1, 1)
+        this.canMove = true;
+
+        //if using the same frame, means same colour
+        if (bobaBelow[0].gameObject.frame == this.player.frame) {
+            this.isMatched = true;
+            //using this testRect to check and visualise the overlapReact
+            let testRect = this.add.rectangle(0, this.player.y + this.bobaSize * 1.5, 512, 1, 0x6666ff);
+            let rowBelow = this.physics.overlapRect(0, this.player.y + this.bobaSize * 1.5, 512, 1);
+
+            this.tweens.add({
+                targets: [this.player],
+                y: rowBelow[0].gameObject.y,
+                duration: 100,
+                callbackScope: this,
+                onUpdate: function (tween, target) {
+                    //update y as the tile is moving up
+                    this.player.y = Math.min(this.player.y, bobaBelow[0].gameObject.y);
+                },
+                onComplete: function () {
+
+                    //upon complete shift it down 
+                    //get value
+                    let values = Phaser.Utils.Array.NumberArray(0, gameOption.columns - 1);
+                    //shuffle what's inside and setFrame
+                    for (let i = 0; i < gameOption.columns; i++) {
+                        //assign new frame to this used frame
+                        rowBelow[i].gameObject.setFrame(values[i]);
+                        //shift it to all the way below
+                        rowBelow[i].gameObject.y += this.bobaSize * gameOption.rows;
+                    }
+
+                    //check for match upon complete
+                    this.checkMatch();
+
+
+
+                }
+            });
+        } else {
+            this.canMove = true;
         }
     }
 }
+
