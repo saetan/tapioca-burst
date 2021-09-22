@@ -7,9 +7,10 @@ let gameOption = {
     bobaSpeed: 200
 }
 
+let score = 0;
+let scoreText;
 
 export default class TitleScreen extends Phaser.Scene {
-
     preload() {
 
         //import the boba photo
@@ -22,7 +23,7 @@ export default class TitleScreen extends Phaser.Scene {
 
     }
     create() {
-
+        scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px' });
         //add boba group to physics group
         this.bobasGroup = this.physics.add.group();
 
@@ -61,12 +62,17 @@ export default class TitleScreen extends Phaser.Scene {
 
         //then avoid using the same middle colour so we remove it from the array above
         values.splice(this.middleColour, 1);
-        console.log(this.middleColour);
 
         // x value is based on the middle boba pos, 
         //y is same arrange as of our group but we need to be one boba size higher than the group.for the boba choice, we will get from array minus the middle colour
         this.player = this.bobasGroup.create(this.bobaSize * Math.floor(gameOption.columns / 2), 1024 / 4 * 3 - this.bobaSize, "bobas", Phaser.Utils.Array.GetRandom(values));
 
+        // this.player.physics.world.on('worldbounds', (body, up, down, left, right) => {
+        //     if (down) {
+        //         console.log(down);
+        //         console.log("uwu");
+        //     }
+        // })
         //need to adjust player's origin as well
         this.adjustBoba(this.player);
         //move entire boba group up 
@@ -130,9 +136,15 @@ export default class TitleScreen extends Phaser.Scene {
 
         //if using the same frame, means same colour
         if (bobaBelow[0].gameObject.frame == this.player.frame) {
+            if (!this.isMatched) {
+                score += 10;
+            } else {
+                score += 20;
+            }
             this.isMatched = true;
+            scoreText.setText("score: " + score);
             //using this testRect to check and visualise the overlapReact
-            let testRect = this.add.rectangle(0, this.player.y + this.bobaSize * 1.5, 512, 1, 0x6666ff);
+            // let testRect = this.add.rectangle(0, this.player.y + this.bobaSize * 1.5, 512, 1, 0x6666ff);
             let rowBelow = this.physics.overlapRect(0, this.player.y + this.bobaSize * 1.5, 512, 1);
 
             this.tweens.add({
@@ -166,7 +178,38 @@ export default class TitleScreen extends Phaser.Scene {
             });
         } else {
             this.canMove = true;
+            if (this.isMatched) {
+                // no combo
+                this.isMatched = false;
+
+                //scan for colour below 
+                let bobaBelow = this.physics.overlapRect(this.player.x + this.bobaSize / 2, this.player.y + this.bobaSize * 1.5, 1, 1);
+
+                //get random number
+                let values = Phaser.Utils.Array.NumberArray(0, gameOption.columns - 1);
+
+                //removes the item that is currently below me so I won't get same colour as it
+                values.splice(bobaBelow[0].gameObject.frame.name, 1);
+
+                //change player frame
+                this.player.setFrame(Phaser.Utils.Array.GetRandom(values));
+
+            }
+        }
+    }
+
+    checkOutOfBound() {
+
+        this.player.body.setCollideWorldBounds(true);
+    }
+
+    update() {
+        if (this.player.y <= 0) {
+            this.scene.start("titlescreen");
         }
     }
 }
 
+// two issues at the moment
+// drop too fast then out of the world, might need custom 
+//but the way i pushing player up need to reconsider
