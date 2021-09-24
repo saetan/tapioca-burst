@@ -16,7 +16,7 @@ let gameOption = {
     playerSpeed: 60,
 }
 
-let score = 0;
+let score;
 let scoreText;
 let bobaSound;
 let comboStreakSound;
@@ -41,6 +41,7 @@ export default class TitleScreen extends Phaser.Scene {
 
     }
     create() {
+        score = 0;
         this.sound.removeAll();
         scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px' });
         bobaSound = this.sound.add('popSound');
