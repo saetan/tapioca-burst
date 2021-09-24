@@ -1,14 +1,28 @@
 import Phaser, { GameObjects, Scene } from "phaser";
 import bobasSpriteSheet from '../../public/assets/bobas.png'
+import popSound from '../../public/assets/Mana_Potion_2.mp3'
+import comboSound from '../../public/assets/Coin_2.mp3'
+import bgMusic from '../../public/assets/bg.wav'
+import * as configFile from "../config.js"
+
+
+const gameWidth = configFile.config.width;
+const gameHeight = configFile.config.height;
 
 let gameOption = {
     columns: 4,
-    rows: 20,
-    bobaSpeed: 200
+    rows: 50,
+    bobaSpeed: 200,
+    playerSpeed: 60,
 }
 
 let score = 0;
 let scoreText;
+let bobaSound;
+let comboStreakSound;
+let gameBGMusic;
+let comboTimer;
+let isCombo = false;
 
 export default class TitleScreen extends Phaser.Scene {
     preload() {
@@ -19,16 +33,37 @@ export default class TitleScreen extends Phaser.Scene {
             frameHeight: 128
         });
 
+        this.load.audio('popSound', popSound);
+        this.load.audio('comboSound', comboSound);
+        this.load.audio('bgMusic', bgMusic);
+
 
 
     }
     create() {
+        this.sound.removeAll();
         scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px' });
+        bobaSound = this.sound.add('popSound');
+        bobaSound.volume = 0.5;
+
+        gameBGMusic = this.sound.add('bgMusic', {
+            volume: 0.2,
+            rate: 1,
+            loop: true,
+        });
+
+        gameBGMusic.play();
+
+
+
+        comboStreakSound = this.sound.add('comboSound');
+        comboStreakSound.volume = 0.5;
         //add boba group to physics group
         this.bobasGroup = this.physics.add.group();
 
         //determine tile size, different layout different size
-        this.bobaSize = 512 / gameOption.columns; //need to change
+        //initially 512, i change it to variable, more dynamic
+        this.bobaSize = gameWidth / gameOption.columns; //need to change
 
         //number of rows then we have then each row we do an array
         for (let i = 0; i < gameOption.rows; i++) {
@@ -47,8 +82,7 @@ export default class TitleScreen extends Phaser.Scene {
 
             //placing of bobas
             for (let j = 0; j < gameOption.columns; j++) {
-                let boba = this.bobasGroup.create(j * this.bobaSize, i * this.bobaSize + 1024 / 4 * 3, "bobas", values[j]);
-
+                let boba = this.bobasGroup.create(j * this.bobaSize, i * this.bobaSize + gameHeight / 4 * 3, "bobas", values[j]);
                 //a function to adjust the sprite to set it's achor to the top left 0,0
                 this.adjustBoba(boba);
             }
@@ -65,18 +99,12 @@ export default class TitleScreen extends Phaser.Scene {
 
         // x value is based on the middle boba pos, 
         //y is same arrange as of our group but we need to be one boba size higher than the group.for the boba choice, we will get from array minus the middle colour
-        this.player = this.bobasGroup.create(this.bobaSize * Math.floor(gameOption.columns / 2), 1024 / 4 * 3 - this.bobaSize, "bobas", Phaser.Utils.Array.GetRandom(values));
-
-        // this.player.physics.world.on('worldbounds', (body, up, down, left, right) => {
-        //     if (down) {
-        //         console.log(down);
-        //         console.log("uwu");
-        //     }
-        // })
+        this.player = this.bobasGroup.create(this.bobaSize * Math.floor(gameOption.columns / 2), gameHeight / 4 * 3 - this.bobaSize, "bobas", Phaser.Utils.Array.GetRandom(values));
         //need to adjust player's origin as well
         this.adjustBoba(this.player);
         //move entire boba group up 
-        this.bobasGroup.setVelocityY(-gameOption.bobaSpeed); //need negative cause going up
+        //this.bobasGroup.setVelocityY(-gameOption.bobaSpeed); //need negative cause going up
+        this.increaseBobaGroupSpeed();
         //player movement
         this.canMove = true;
 
@@ -85,7 +113,7 @@ export default class TitleScreen extends Phaser.Scene {
 
         //player Movement
         this.input.on("pointerdown", this.moveBoba, this);
-        //this.input.on("pointerdown", this.moveBobasGroup, this);
+
     }
 
     adjustBoba(sprite) {
@@ -95,8 +123,17 @@ export default class TitleScreen extends Phaser.Scene {
         sprite.heightWidth = this.bobaSize;
     }
 
-    moveBobasGroup() {
-        this.bobasGroup.incY(-this.bobaSize);
+    increaseBobaGroupSpeed() {
+        if (score <= 500) {
+            this.bobasGroup.setVelocityY(-gameOption.bobaSpeed);
+        } else {
+            let newSpeed = gameOption.bobaSpeed + Math.floor(score / 100);
+            this.bobasGroup.setVelocityY(-newSpeed);
+        }
+    }
+
+    muteBGMusic() {
+        gameBGMusic.mute = !gameBGMusic.mute;
     }
 
     //method to move player
@@ -116,7 +153,7 @@ export default class TitleScreen extends Phaser.Scene {
                 this.tweens.add({
                     targets: [this.player],
                     x: column * this.bobaSize,
-                    duration: distance * 30,
+                    duration: distance * gameOption.playerSpeed,
                     callbackScope: this,
                     onComplete: function () {
                         // at the end of the tween, check for tile match
@@ -126,6 +163,10 @@ export default class TitleScreen extends Phaser.Scene {
 
             }
         }
+    }
+
+    switchComboOff() {
+        this.isCombo = !this.isCombo;
     }
 
     checkMatch() {
@@ -138,8 +179,27 @@ export default class TitleScreen extends Phaser.Scene {
         if (bobaBelow[0].gameObject.frame == this.player.frame) {
             if (!this.isMatched) {
                 score += 10;
+                bobaSound.play();
             } else {
                 score += 20;
+                comboStreakSound.play();
+                let comboText = this.make.text({
+                    x: this.player.x,
+                    y: this.player.y,
+                    text: "+20",
+                    scale: 1.5,
+                })
+
+                let comboTimer = this.time.addEvent({
+                    delay: 500,                // ms
+                    callback: function () {
+                        comboText.destroy();
+                    },
+                    //args: [],
+                    callbackScope: this,
+                    loop: false,
+                });
+
             }
             this.isMatched = true;
             scoreText.setText("score: " + score);
@@ -162,13 +222,13 @@ export default class TitleScreen extends Phaser.Scene {
                     //get value
                     let values = Phaser.Utils.Array.NumberArray(0, gameOption.columns - 1);
                     //shuffle what's inside and setFrame
+                    Phaser.Utils.Array.Shuffle(values);
                     for (let i = 0; i < gameOption.columns; i++) {
                         //assign new frame to this used frame
                         rowBelow[i].gameObject.setFrame(values[i]);
                         //shift it to all the way below
                         rowBelow[i].gameObject.y += this.bobaSize * gameOption.rows;
                     }
-
                     //check for match upon complete
                     this.checkMatch();
 
@@ -198,18 +258,54 @@ export default class TitleScreen extends Phaser.Scene {
         }
     }
 
-    checkOutOfBound() {
-
-        this.player.body.setCollideWorldBounds(true);
+    // checkCombo() {
+    //     let isComboTimer;
+    //     if (!isCombo) {
+    //         isCombo = true;
+    //         isComboTimer = this.time.addEvent({
+    //             delay: 500,                // ms
+    //             callback: function () {
+    //                 isCombo = false;
+    //                 isComboTimer.loop = false;
+    //             },
+    //             //args: [],
+    //             callbackScope: this,
+    //             loop: false,
+    //         });
+    //     }
+    //     if (isCombo && this.isMatched) {
+    //         isComboTimer.loop = true;
+    //     }
+    // }
+    getBobaBelow() {
+        return this.physics.overlapRect(this.player.x + this.bobaSize / 2, this.player.y + this.bobaSize, 1, 1)
     }
 
     update() {
+        this.increaseBobaGroupSpeed()
+        let testingBoba = this.getBobaBelow();
         if (this.player.y <= 0) {
+            gameBGMusic.destroy;
             this.scene.start("titlescreen");
+        }
+
+        if (this.player.y >= (gameHeight - this.bobaSize)) {
+            let currentBelow = this.getBobaBelow();
+            if (currentBelow[0]) {
+                console.log("there is boba below");
+                this.player.y = Math.min(this.player.y, currentBelow[0].gameObject.y);
+                console.log(this.player.y);
+            } else {
+                console.log("no boba here");
+                console.log(gameHeight - this.bobaSize);
+            }
         }
     }
 }
 
+let buttonX = document.getElementById('buttonTest').addEventListener("click", () => {
+    muteBGMusic();
+});
 // two issues at the moment
 // drop too fast then out of the world, might need custom 
 //but the way i pushing player up need to reconsider
