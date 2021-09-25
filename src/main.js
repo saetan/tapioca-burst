@@ -1,25 +1,20 @@
 import Phaser from "phaser";
-import TitleScreen from "./scenes/TitleScreen";
+import MenuScene from "./scenes/MenuScene.js";
+import TitleScreen from "./scenes/TitleScreen.js";
 import * as configFile from "./config.js"
 
 window.onload = function () {
     const config = configFile.config;
-    // const config = {
-    //     width: window.innerWidth,
-    //     height: window.innerHeight,
-    //     type: Phaser.AUTO,
-    //     autoCenter: true,
-    //     physics: {
-    //         default: 'arcade',
-    //         arcade: {
-    //             debug: true,
-    //         },
-    //     },
-    // }
+
+    let titleScreen = new TitleScreen();
+    let menuScene = new MenuScene();
 
     const game = new Phaser.Game(config);
+
+    game.scene.add('menuscene', MenuScene);
     game.scene.add('titlescreen', TitleScreen);
-    game.scene.start('titlescreen');
+
+    game.scene.start('menuscene');
 }
 
 

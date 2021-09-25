@@ -25,6 +25,10 @@ let comboTimer;
 let isCombo = false;
 
 export default class TitleScreen extends Phaser.Scene {
+
+    int() {
+
+    }
     preload() {
 
         //import the boba photo
@@ -283,6 +287,7 @@ export default class TitleScreen extends Phaser.Scene {
     }
 
     update() {
+
         this.increaseBobaGroupSpeed()
         let testingBoba = this.getBobaBelow();
         if (this.player.y <= 0) {
