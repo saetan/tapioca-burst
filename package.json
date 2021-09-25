@@ -5,7 +5,9 @@
     "phaser": "^3.55.2"
   },
   "devDependencies": {
-    "gh-pages": "^3.2.3"
+    "cssnano": "^5.0.8",
+    "gh-pages": "^3.2.3",
+    "postcss": "^8.3.7"
   },
   "name": "tapioca-burst",
   "description": "Bubble lover's game",
@@ -15,7 +17,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel src/index.html",
     "clean": "gh-pages-clean",
-    "build": "parcel build src/index.html --out-dir dist --public-url /tapioca-burst/",
+    "build": "parcel build src/index.html --no-minify --out-dir dist --public-url /tapioca-burst/",
     "predeploy": "npm run build",
     "deploy": "gh-pages -b gh-pages -d dist"
   },
