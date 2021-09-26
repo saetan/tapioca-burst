@@ -3,7 +3,9 @@ import bobasSpriteSheet from '../../public/assets/bobas.png'
 import popSound from '../../public/assets/Mana_Potion_2.mp3'
 import comboSound from '../../public/assets/Coin_2.mp3'
 import bgMusic from '../../public/assets/bg.wav'
+import leadershipscene from './LeadershipBoardScene.js'
 import * as configFile from "../config.js"
+import * as mainJS from "../main.js";
 
 
 const gameWidth = configFile.config.width;
@@ -16,6 +18,10 @@ let gameOption = {
     playerSpeed: 60,
 }
 
+let scoreList = [
+
+]
+
 let score;
 let scoreText;
 let bobaSound;
@@ -23,6 +29,7 @@ let comboStreakSound;
 let gameBGMusic;
 let comboTimer;
 let isCombo = false;
+
 
 export default class TitleScreen extends Phaser.Scene {
 
@@ -170,10 +177,6 @@ export default class TitleScreen extends Phaser.Scene {
         }
     }
 
-    switchComboOff() {
-        this.isCombo = !this.isCombo;
-    }
-
     checkMatch() {
         // mid point of x, and mid point of y of below curr play, thats why mutiple 1.5
         // overlapRect will return an array of bodies that were overlap in the given area
@@ -195,6 +198,7 @@ export default class TitleScreen extends Phaser.Scene {
                     scale: 1.5,
                 })
 
+                //combo text timer
                 let comboTimer = this.time.addEvent({
                     delay: 500,                // ms
                     callback: function () {
@@ -263,28 +267,25 @@ export default class TitleScreen extends Phaser.Scene {
         }
     }
 
-    // checkCombo() {
-    //     let isComboTimer;
-    //     if (!isCombo) {
-    //         isCombo = true;
-    //         isComboTimer = this.time.addEvent({
-    //             delay: 500,                // ms
-    //             callback: function () {
-    //                 isCombo = false;
-    //                 isComboTimer.loop = false;
-    //             },
-    //             //args: [],
-    //             callbackScope: this,
-    //             loop: false,
-    //         });
-    //     }
-    //     if (isCombo && this.isMatched) {
-    //         isComboTimer.loop = true;
-    //     }
-    // }
     getBobaBelow() {
         return this.physics.overlapRect(this.player.x + this.bobaSize / 2, this.player.y + this.bobaSize, 1, 1)
     }
+
+    storeHighScore(userName, userScore) {
+        let userData = {
+            name: userName,
+            score: userScore,
+        }
+
+        scoreList.push(userData);
+
+        //sort the data within to make sure it's accordingly to the ranking
+        scoreList.sort((firstElement, secondElement) => {
+            return secondElement.score - firstElement.score;
+        })
+        localStorage.setItem(1, JSON.stringify(scoreList));
+    }
+
 
     update() {
 
@@ -292,17 +293,17 @@ export default class TitleScreen extends Phaser.Scene {
         let testingBoba = this.getBobaBelow();
         if (this.player.y <= 0) {
             gameBGMusic.destroy;
+            let playerName = prompt("Enter Your Name");
+            this.storeHighScore(playerName, score);
             this.scene.start("titlescreen");
         }
 
         if (this.player.y >= (gameHeight - this.bobaSize)) {
             let currentBelow = this.getBobaBelow();
             if (currentBelow[0]) {
-                console.log("there is boba below");
                 this.player.y = Math.min(this.player.y, currentBelow[0].gameObject.y);
                 console.log(this.player.y);
             } else {
-                console.log("no boba here");
                 console.log(gameHeight - this.bobaSize);
             }
         }

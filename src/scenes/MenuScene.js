@@ -16,7 +16,7 @@ export default class MenuScene extends Phaser.Scene {
         var add = this.add;
         var input = this.input;
         var playButton;
-        const _this = this;
+        var leadershipButton;
 
         var menuBGMusic = this.sound.add('menuBGMusic', {
             volume: 0.2,
@@ -36,11 +36,10 @@ export default class MenuScene extends Phaser.Scene {
 
             }
 
-
         });
         let weclome = add.text(configFile.config.width / 2, configFile.config.width / 4, 'Welcome', { fontFamily: 'VT323', fontSize: 150, color: '#ffdac1' });
         weclome.setOrigin(0.5, 0.5);
-        console.log(playButton);
+
         playButton = add.text(configFile.config.width / 2, configFile.config.height / 2, "Play", { fontFamily: 'VT323', fontSize: 150, color: '#ffb7b2' });
         playButton.setOrigin(0.5, 0.5);
         playButton.setInteractive({ useHandCursor: true });
@@ -51,6 +50,25 @@ export default class MenuScene extends Phaser.Scene {
             playButton.setTint(0XFFB7B2);
         })
         playButton.on('pointerdown', this.clickPlay);
+
+        //Leadership button
+        leadershipButton = add.text(configFile.config.width / 2, configFile.config.height / 4 * 3, "Leaderboard", { fontFamily: 'VT323', fontSize: 100, color: '#ffb7b2' });
+        leadershipButton.setOrigin(0.5, 0.5);
+        leadershipButton.setInteractive({ useHandCursor: true });
+        leadershipButton.on('pointerover', function () {
+            leadershipButton.setTint(0XFF9AA2);
+        })
+        leadershipButton.on('pointerout', function () {
+            leadershipButton.setTint(0XFFB7B2);
+        })
+        leadershipButton.on('pointerdown', () => {
+            console.log("uwu");
+            this.scene.switch("leaderboardscene");
+        });
+
+
+
+
 
     }
     clickPlay() {

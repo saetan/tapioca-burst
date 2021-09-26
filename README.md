@@ -9,6 +9,12 @@ A game project using Phaser 3.
 Try to survive as long as possible while accumlate more scores.
 
 # Updates
+## 3rd Update
+-Added Leadershipboard
+-Added setLocalStorage Logic
+-Added getLocalStorage Logic
+-Added Generate Leadershipboard list
+
 ## 2nd Update
 - Added Menu Screen
 - Added Switch Scene Function
