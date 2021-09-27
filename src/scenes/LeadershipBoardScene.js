@@ -13,6 +13,27 @@ export default class LeaderBoardScene extends Phaser.Scene {
 
     create() {
         let scores = this.getHighScore(1);
+        if (!scores) {
+            scores = [
+                {
+                    name: "Pls",
+                    score: 0
+                },
+                {
+                    name: "buy",
+                    score: 0
+                },
+                {
+                    name: "me",
+                    score: 0
+                },
+
+                {
+                    name: "bbt",
+                    score: 0
+                }
+            ]
+        }
         let add = this.add;
         let header = add.text(configFile.config.width / 2, configFile.config.height / 10, "Leaderboard", { fontFamily: 'VT323', fontSize: 100, color: '#ffb7b2' }).setOrigin(0.5, 0.5);
 
@@ -21,7 +42,6 @@ export default class LeaderBoardScene extends Phaser.Scene {
         for (let score of scores) {
             let tempText = this.add.text(configFile.config.width / 2, (configFile.config.height / 10) + newHeight, `${score.name}   ${score.score}`, { fontFamily: 'VT323', fontSize: 50, color: '#ffb7b2' }).setOrigin(0.5, 0.5);
             newHeight += 50;
-
         }
     }
 

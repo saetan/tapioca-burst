@@ -9,6 +9,10 @@ A game project using Phaser 3.
 Try to survive as long as possible while accumlate more scores.
 
 # Updates
+## 5th Update
+-First time leadership board will generate dummy leadership board
+-Enforce only can key in 3 letter name for leadership board
+
 
 ## 4th Update
 -Remove a weird bug where i can still move while falling down

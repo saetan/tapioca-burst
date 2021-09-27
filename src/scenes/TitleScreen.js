@@ -194,8 +194,6 @@ export default class TitleScreen extends Phaser.Scene {
                     y: this.player.y,
                     text: "+20",
                     scale: 1.5,
-
-
                 });
 
                 //combo text timer
@@ -244,8 +242,8 @@ export default class TitleScreen extends Phaser.Scene {
                         rowBelow[i].gameObject.y += this.bobaSize * gameOption.rows;
                     }
                     //check for match upon complete
+                    //this.inCombo = true;
                     this.checkMatch();
-
 
 
                 }
@@ -297,8 +295,12 @@ export default class TitleScreen extends Phaser.Scene {
         if (this.player.y <= 0) {
             gameBGMusic.destroy;
             let playerName = prompt("Enter Your Name");
-            this.storeHighScore(playerName, score);
-            this.scene.start("titlescreen");
+            if (playerName.length > 3) {
+                alert("3 Letter only Please key again");
+            } else {
+                this.storeHighScore(playerName, score);
+                this.scene.start("titlescreen");
+            }
         }
 
         // if (this.player.y >= (gameHeight - this.bobaSize)) {
