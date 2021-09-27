@@ -28,7 +28,7 @@ let bobaSound;
 let comboStreakSound;
 let gameBGMusic;
 let comboTimer;
-let isCombo = false;
+let inCombo = false;
 
 
 export default class TitleScreen extends Phaser.Scene {
@@ -128,6 +128,7 @@ export default class TitleScreen extends Phaser.Scene {
 
     }
 
+    //set the achor point to 0.5 0.5
     adjustBoba(sprite) {
         sprite.setOrigin(0);
 
@@ -160,6 +161,7 @@ export default class TitleScreen extends Phaser.Scene {
             //clicked colum * boba size will get the column x value, then minus player x, then we divide by boba size to get column to get x 
             let distance = Math.floor(Math.abs(column * this.bobaSize - this.player.x) / this.bobaSize);
 
+            //while it's still moving
             if (distance > 0) {
                 this.canMove = false;
                 this.tweens.add({
@@ -181,14 +183,10 @@ export default class TitleScreen extends Phaser.Scene {
         // mid point of x, and mid point of y of below curr play, thats why mutiple 1.5
         // overlapRect will return an array of bodies that were overlap in the given area
         let bobaBelow = this.physics.overlapRect(this.player.x + this.bobaSize / 2, this.player.y + this.bobaSize * 1.5, 1, 1)
-        this.canMove = true;
-
+        //this.canMove = true;
         //if using the same frame, means same colour
         if (bobaBelow[0].gameObject.frame == this.player.frame) {
-            if (!this.isMatched) {
-                score += 10;
-                bobaSound.play();
-            } else {
+            if (inCombo) {
                 score += 20;
                 comboStreakSound.play();
                 let comboText = this.make.text({
@@ -196,20 +194,27 @@ export default class TitleScreen extends Phaser.Scene {
                     y: this.player.y,
                     text: "+20",
                     scale: 1.5,
-                })
+
+
+                });
 
                 //combo text timer
                 let comboTimer = this.time.addEvent({
                     delay: 500,                // ms
                     callback: function () {
                         comboText.destroy();
+                        inCombo = false;
                     },
                     //args: [],
                     callbackScope: this,
                     loop: false,
                 });
-
+            } else if (!this.isMatched) {
+                score += 10;
+                bobaSound.play();
+                inCombo = true;
             }
+
             this.isMatched = true;
             scoreText.setText("score: " + score);
             //using this testRect to check and visualise the overlapReact
@@ -248,9 +253,7 @@ export default class TitleScreen extends Phaser.Scene {
         } else {
             this.canMove = true;
             if (this.isMatched) {
-                // no combo
                 this.isMatched = false;
-
                 //scan for colour below 
                 let bobaBelow = this.physics.overlapRect(this.player.x + this.bobaSize / 2, this.player.y + this.bobaSize * 1.5, 1, 1);
 
@@ -298,15 +301,15 @@ export default class TitleScreen extends Phaser.Scene {
             this.scene.start("titlescreen");
         }
 
-        if (this.player.y >= (gameHeight - this.bobaSize)) {
-            let currentBelow = this.getBobaBelow();
-            if (currentBelow[0]) {
-                this.player.y = Math.min(this.player.y, currentBelow[0].gameObject.y);
-                console.log(this.player.y);
-            } else {
-                console.log(gameHeight - this.bobaSize);
-            }
-        }
+        // if (this.player.y >= (gameHeight - this.bobaSize)) {
+        //     let currentBelow = this.getBobaBelow();
+        //     if (currentBelow[0]) {
+        //         this.player.y = Math.min(this.player.y, currentBelow[0].gameObject.y);
+        //         console.log(this.player.y);
+        //     } else {
+        //         console.log(gameHeight - this.bobaSize);
+        //     }
+        // }
     }
 }
 

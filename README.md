@@ -9,6 +9,11 @@ A game project using Phaser 3.
 Try to survive as long as possible while accumlate more scores.
 
 # Updates
+
+## 4th Update
+-Remove a weird bug where i can still move while falling down
+-Changed scoring system, using a timer to calculate combo, more skill based game.
+
 ## 3rd Update
 -Added Leadershipboard
 -Added setLocalStorage Logic
