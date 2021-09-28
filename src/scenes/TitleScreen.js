@@ -1,5 +1,5 @@
 import Phaser, { GameObjects, Scene } from "phaser";
-import bobasSpriteSheet from '../../public/assets/bobas.png'
+import bobasSpriteSheet from '../../public/assets/newBlock.png'
 import popSound from '../../public/assets/Mana_Potion_2.mp3'
 import comboSound from '../../public/assets/Coin_2.mp3'
 import bgMusic from '../../public/assets/bg.wav'
@@ -54,9 +54,17 @@ export default class TitleScreen extends Phaser.Scene {
     create() {
         score = 0;
         this.sound.removeAll();
-        scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px' });
+        scoreText = this.add.text(16, 16, 'score: 0', { fontFamily: 'VT323', fontSize: '50px' });
         bobaSound = this.sound.add('popSound');
         bobaSound.volume = 0.5;
+
+        let exitButton = this.add.text(configFile.config.width / 4 * 3, 16, 'Exit', { fontFamily: 'VT323', fontSize: 50, color: '#ffdac1' }).setInteractive({ useHandCursor: true });
+        exitButton.setOrigin(0, 0);
+
+        exitButton.on('pointerdown', function () {
+            this.scene.scene.start("menuscene");
+            this.scene.sound.removeAll();
+        })
 
         gameBGMusic = this.sound.add('bgMusic', {
             volume: 0.2,

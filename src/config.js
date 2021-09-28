@@ -6,11 +6,12 @@ export const config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true,
+            debug: false,
         },
     },
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
+    backgroundColor: "#957DAD",
 }

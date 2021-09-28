@@ -31,16 +31,13 @@ export default class MenuScene extends Phaser.Scene {
                 families: ['VT323']
             },
             active: function () {
-                // let weclome = add.text(configFile.config.width / 2, configFile.config.width / 4, 'Welcome', { fontFamily: 'VT323', fontSize: 150, color: '#ffdac1' });
-                // weclome.setOrigin(0.5, 0.5);
-
             }
 
         });
-        let weclome = add.text(configFile.config.width / 2, configFile.config.width / 4, 'Welcome', { fontFamily: 'VT323', fontSize: 150, color: '#ffdac1' });
+        let weclome = add.text(configFile.config.width / 2, configFile.config.width / 4, 'Welcome', { fontFamily: 'VT323', fontSize: 150, color: '#FF9AA2', stroke: "#000000", strokeThickness: 1 });
         weclome.setOrigin(0.5, 0.5);
 
-        playButton = add.text(configFile.config.width / 2, configFile.config.height / 2, "Play", { fontFamily: 'VT323', fontSize: 150, color: '#ffb7b2' });
+        playButton = add.text(configFile.config.width / 2, configFile.config.height / 2, "Play", { fontFamily: 'VT323', fontSize: 150, color: '#ffb7b2', stroke: "#000000", strokeThickness: 1 });
         playButton.setOrigin(0.5, 0.5);
         playButton.setInteractive({ useHandCursor: true });
         playButton.on('pointerover', function () {
@@ -52,7 +49,7 @@ export default class MenuScene extends Phaser.Scene {
         playButton.on('pointerdown', this.clickPlay);
 
         //Leadership button
-        leadershipButton = add.text(configFile.config.width / 2, configFile.config.height / 4 * 3, "Leaderboard", { fontFamily: 'VT323', fontSize: 100, color: '#ffb7b2' });
+        leadershipButton = add.text(configFile.config.width / 2, configFile.config.height / 4 * 3, "Leaderboard", { fontFamily: 'VT323', fontSize: 100, color: '#ffb7b2', stroke: "#000000", strokeThickness: 1 });
         leadershipButton.setOrigin(0.5, 0.5);
         leadershipButton.setInteractive({ useHandCursor: true });
         leadershipButton.on('pointerover', function () {

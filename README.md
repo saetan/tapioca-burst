@@ -101,6 +101,15 @@ Dive deep into the framework first and understand the core feature of it. As of 
 Will remember to keep things simple and break big problems into a smaller, and simple individual issues and tackle from there. In this project, I am all over the place, chasing two rabbits at the same time and end up getting none.
 
 # Updates ChangeLogs
+## 7th Update
+- redrawn my boba assets
+- Changed background Colour
+- Added background Colour
+- Added a placeholder name if the leaderboard name is null
+- Changed the window background colour through html
+- Added stroke to the menu words
+
+
 ## 6th Update
 - Updated readme
 - Described project
