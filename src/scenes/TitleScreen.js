@@ -303,6 +303,9 @@ export default class TitleScreen extends Phaser.Scene {
         if (this.player.y <= 0) {
             gameBGMusic.destroy;
             let playerName = prompt("Enter Your Name");
+            if (!playerName) {
+                playerName = "uwu";
+            }
             if (playerName.length > 3) {
                 alert("3 Letter only Please key again");
             } else {

@@ -30,37 +30,36 @@ export default class MenuScene extends Phaser.Scene {
             google: {
                 families: ['VT323']
             },
-            active: function () {
+            active: () => {
+                let weclome = add.text(configFile.config.width / 2, configFile.config.width / 4, 'Welcome', { fontFamily: 'VT323', fontSize: 150, color: '#FF9AA2', stroke: "#000000", strokeThickness: 1 });
+                weclome.setOrigin(0.5, 0.5);
+                playButton = add.text(configFile.config.width / 2, configFile.config.height / 2, "Play", { fontFamily: 'VT323', fontSize: 150, color: '#ffb7b2', stroke: "#000000", strokeThickness: 1 });
+                playButton.setOrigin(0.5, 0.5);
+                playButton.setInteractive({ useHandCursor: true });
+                playButton.on('pointerover', function () {
+                    playButton.setTint(0XFF9AA2);
+                })
+                playButton.on('pointerout', function () {
+                    playButton.setTint(0XFFB7B2);
+                })
+                playButton.on('pointerdown', this.clickPlay);
+
+                //Leadership button
+                leadershipButton = add.text(configFile.config.width / 2, configFile.config.height / 4 * 3, "Leaderboard", { fontFamily: 'VT323', fontSize: 100, color: '#ffb7b2', stroke: "#000000", strokeThickness: 1 });
+                leadershipButton.setOrigin(0.5, 0.5);
+                leadershipButton.setInteractive({ useHandCursor: true });
+                leadershipButton.on('pointerover', function () {
+                    leadershipButton.setTint(0XFF9AA2);
+                })
+                leadershipButton.on('pointerout', function () {
+                    leadershipButton.setTint(0XFFB7B2);
+                })
+                leadershipButton.on('pointerdown', () => {
+                    console.log("uwu");
+                    this.scene.switch("leaderboardscene");
+                });
             }
 
-        });
-        let weclome = add.text(configFile.config.width / 2, configFile.config.width / 4, 'Welcome', { fontFamily: 'VT323', fontSize: 150, color: '#FF9AA2', stroke: "#000000", strokeThickness: 1 });
-        weclome.setOrigin(0.5, 0.5);
-
-        playButton = add.text(configFile.config.width / 2, configFile.config.height / 2, "Play", { fontFamily: 'VT323', fontSize: 150, color: '#ffb7b2', stroke: "#000000", strokeThickness: 1 });
-        playButton.setOrigin(0.5, 0.5);
-        playButton.setInteractive({ useHandCursor: true });
-        playButton.on('pointerover', function () {
-            playButton.setTint(0XFF9AA2);
-        })
-        playButton.on('pointerout', function () {
-            playButton.setTint(0XFFB7B2);
-        })
-        playButton.on('pointerdown', this.clickPlay);
-
-        //Leadership button
-        leadershipButton = add.text(configFile.config.width / 2, configFile.config.height / 4 * 3, "Leaderboard", { fontFamily: 'VT323', fontSize: 100, color: '#ffb7b2', stroke: "#000000", strokeThickness: 1 });
-        leadershipButton.setOrigin(0.5, 0.5);
-        leadershipButton.setInteractive({ useHandCursor: true });
-        leadershipButton.on('pointerover', function () {
-            leadershipButton.setTint(0XFF9AA2);
-        })
-        leadershipButton.on('pointerout', function () {
-            leadershipButton.setTint(0XFFB7B2);
-        })
-        leadershipButton.on('pointerdown', () => {
-            console.log("uwu");
-            this.scene.switch("leaderboardscene");
         });
 
 

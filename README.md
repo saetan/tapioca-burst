@@ -100,7 +100,11 @@ Dive deep into the framework first and understand the core feature of it. As of 
 
 Will remember to keep things simple and break big problems into a smaller, and simple individual issues and tackle from there. In this project, I am all over the place, chasing two rabbits at the same time and end up getting none.
 
-# Updates ChangeLogs
+# Updates 
+## 8th Update
+- solve a bug where if player cancel enter name, causing game to hang
+- use loader to preload font when game start. 
+
 ## 7th Update
 - redrawn my boba assets
 - Changed background Colour
