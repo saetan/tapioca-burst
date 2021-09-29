@@ -23,6 +23,7 @@ export default class MenuScene extends Phaser.Scene {
         var input = this.input;
         var playButton;
         var leadershipButton;
+        var insturctionButton;
         var menuBGMusic = this.sound.add('menuBGMusic', {
             volume: 0.2,
             rate: 1,
@@ -37,7 +38,7 @@ export default class MenuScene extends Phaser.Scene {
             active: () => {
                 let weclome = add.text(configFile.config.width / 2, configFile.config.width / 4, 'Welcome', { fontFamily: 'VT323', fontSize: 150, color: '#FF9AA2', stroke: "#000000", strokeThickness: 1 });
                 weclome.setOrigin(0.5, 0.5);
-                playButton = add.text(configFile.config.width / 2, configFile.config.height / 2, "Play", { fontFamily: 'VT323', fontSize: 150, color: '#ffb7b2', stroke: "#000000", strokeThickness: 1 });
+                playButton = add.text(configFile.config.width / 2, configFile.config.height / 3, "Play", { fontFamily: 'VT323', fontSize: 150, color: '#ffb7b2', stroke: "#000000", strokeThickness: 1 });
                 playButton.setOrigin(0.5, 0.5);
                 playButton.setInteractive({ useHandCursor: true });
                 playButton.on('pointerover', function () {
@@ -48,6 +49,22 @@ export default class MenuScene extends Phaser.Scene {
                 })
                 playButton.on('pointerdown', this.clickPlay);
                 isLoading = false;
+
+                //Instruction Button
+                insturctionButton = add.text(configFile.config.width / 2, configFile.config.height / 2 + 50, "instruction", { fontFamily: 'VT323', fontSize: 100, color: '#ffb7b2', stroke: "#000000", strokeThickness: 1 });
+                insturctionButton.setOrigin(0.5, 0.5);
+                insturctionButton.setInteractive({ useHandCursor: true });
+                insturctionButton.on('pointerover', function () {
+                    insturctionButton.setTint(0XFF9AA2);
+                })
+
+                insturctionButton.on('pointerout', function () {
+                    insturctionButton.setTint(0XFFB7B2);
+                });
+
+                insturctionButton.on('pointerdown', () => {
+                    this.scene.switch("instructionscene");
+                });
 
                 //Leadership button
                 leadershipButton = add.text(configFile.config.width / 2, configFile.config.height / 4 * 3, "Leaderboard", { fontFamily: 'VT323', fontSize: 100, color: '#ffb7b2', stroke: "#000000", strokeThickness: 1 });
@@ -60,7 +77,6 @@ export default class MenuScene extends Phaser.Scene {
                     leadershipButton.setTint(0XFFB7B2);
                 })
                 leadershipButton.on('pointerdown', () => {
-                    console.log("uwu");
                     this.scene.switch("leaderboardscene");
                 });
             }

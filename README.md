@@ -101,6 +101,8 @@ Dive deep into the framework first and understand the core feature of it. As of 
 Will remember to keep things simple and break big problems into a smaller, and simple individual issues and tackle from there. In this project, I am all over the place, chasing two rabbits at the same time and end up getting none.
 
 # Updates
+## 10th Update
+- Added instruction page
 
 ## 9th Update
  - preload font might take awhile so adding loading to improve UX
