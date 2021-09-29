@@ -2,6 +2,9 @@ import Phaser from "phaser"
 import menuBG from '../../public/assets/menuBG.wav'
 import * as configFile from "../config.js"
 
+var loading;
+var isLoading = true;
+
 export default class MenuScene extends Phaser.Scene {
     constructor() {
         super({ key: 'menuscene' });
@@ -10,6 +13,9 @@ export default class MenuScene extends Phaser.Scene {
     preload() {
         this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
         this.load.audio('menuBGMusic', menuBG);
+        if (isLoading) {
+            loading = this.add.text(configFile.config.width / 2, 50, "Loading", { fontSize: 100 }).setOrigin(0.5, 0.5);
+        }
     }
 
     create() {
@@ -17,7 +23,6 @@ export default class MenuScene extends Phaser.Scene {
         var input = this.input;
         var playButton;
         var leadershipButton;
-
         var menuBGMusic = this.sound.add('menuBGMusic', {
             volume: 0.2,
             rate: 1,
@@ -25,7 +30,6 @@ export default class MenuScene extends Phaser.Scene {
         });
 
         menuBGMusic.play();
-
         WebFont.load({
             google: {
                 families: ['VT323']
@@ -43,6 +47,7 @@ export default class MenuScene extends Phaser.Scene {
                     playButton.setTint(0XFFB7B2);
                 })
                 playButton.on('pointerdown', this.clickPlay);
+                isLoading = false;
 
                 //Leadership button
                 leadershipButton = add.text(configFile.config.width / 2, configFile.config.height / 4 * 3, "Leaderboard", { fontFamily: 'VT323', fontSize: 100, color: '#ffb7b2', stroke: "#000000", strokeThickness: 1 });
@@ -70,5 +75,11 @@ export default class MenuScene extends Phaser.Scene {
     clickPlay() {
         this.scene.scene.switch("titlescreen");
 
+    }
+
+    update() {
+        if (!isLoading) {
+            loading.destroy();
+        }
     }
 }
