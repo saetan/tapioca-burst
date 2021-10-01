@@ -43,7 +43,7 @@ For this game, as I am using a framework that I have never used before, I refer 
 The main js will be the first js file to be loaded, it will initiate and load the scene that will be used for the game, I have created a config.js file to store the configuration that will be used to when we init phaser 3 game. Initially I stored this configuration object in the main.js but afterwards I find it cleaner to place the configuration object into a seprate file. And the first scene that this scene will trigger will be the main menu screen
 
 ## Main Menu
-This will have a background music and two text for player to interact, a play and leaderboard "button", technically they are both text that has setInteractive() to true for them. And when clicked, it will be trigger the scene switch function.
+This will have a background music and three text for player to interact, a play, instruction and leaderboard "button", technically they are texts that has setInteractive() to true for them. And when clicked, it will be trigger the scene switch function.
 
 ## Game Level
 This is the main game level, the game level will consist of playing of background music function. Then we will create the size of the bobaCups based on the gameWidth and number of columns there is. So this will make sure each of the bobaCups are equally size. Using this way of measurement will ensure that the level and bobacup can be dynamically created.
@@ -101,6 +101,9 @@ Dive deep into the framework first and understand the core feature of it. As of 
 Will remember to keep things simple and break big problems into a smaller, and simple individual issues and tackle from there. In this project, I am all over the place, chasing two rabbits at the same time and end up getting none.
 
 # Updates
+## 11th Update
+- Updated read me
+
 ## 10th Update
 - Added instruction page
 
